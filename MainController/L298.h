@@ -13,6 +13,8 @@ public:
 
 	void setInverted(bool value);
 	bool getInverted();
+
+	void refresh();
 private:
 	uint8_t _pinSpeed;
 	uint8_t _pinDirA;

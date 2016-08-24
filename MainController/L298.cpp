@@ -11,17 +11,6 @@ L298::~L298() { /* NOTHING TO DECONSTRUCT */ }
 
 void L298::set(float value) {
 	_value = _value;
-
-	if (value >= 0) {									// Set Direction
-		digitalWrite(_pinDirA, !_isInverted);
-		digitalWrite(_pinDirB, _isInverted);
-	}
-	else {
-		digitalWrite(_pinDirA, _isInverted);
-		digitalWrite(_pinDirB, !_isInverted);
-	}
-
-	analogWrite(_pinSpeed, uint8_t(fabs(_value)*255)); 	// Write Speed
 }
 
 float L298::get() {
@@ -34,4 +23,17 @@ void L298::setInverted(bool value) {
 
 bool L298::getInverted() {
 	return _isInverted;
+}
+
+void L298::refresh() {
+	if (_value >= 0) {									// Set Direction
+		digitalWrite(_pinDirA, !_isInverted);
+		digitalWrite(_pinDirB, _isInverted);
+	}
+	else {
+		digitalWrite(_pinDirA, _isInverted);
+		digitalWrite(_pinDirB, !_isInverted);
+	}
+
+	analogWrite(_pinSpeed, uint8_t(fabs(_value)*255)); 	// Write Speed
 }
