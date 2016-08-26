@@ -20,7 +20,7 @@ private:
 	uint8_t _pinSignal;
 	uint8_t _pinAnalog;
 
-	uint8_t _power;
+	uint8_t _power = 70; // default = 70ms
 
 	long _lastKick;
 };

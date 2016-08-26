@@ -19,10 +19,10 @@ void Kicker::setPower(uint8_t value) {
 	_power = value;
 }
 
-uint8_t getPower() {
+uint8_t Kicker::getPower() {
 	return _power;
 }
 
-void refresh() {
+void Kicker::refresh() {
 	digitalWrite(_pinSignal, isKicking());
 }
