@@ -1,10 +1,10 @@
-#ifndef SENSELIGHT_H
-#define SENSELIGHT_H
+#ifndef SENSELIGHTSLAVE_H
+#define SENSELIGHTSLAVE_H
 
-class SenseLight {
+class SenseLightSlave {
 public:
-	SenseLight(uint8_t analogPin, uint8_t enablePin);
-	~SenseLight();
+	SenseLightSlave(uint8_t analogPin, uint8_t enablePin);
+	~SenseLightSlave();
 
 	uint8_t get() { return _value; }
 
@@ -16,9 +16,9 @@ private:
 	uint8_t _analogPin;
 	uint8_t _enablePin;
 
-	bool _isEnabled = false;
+	bool _isEnabled = true;
 
 	uint8_t _value = 0;
 };
 
-#endif /* SENSELIGHT_H */
+#endif /* SENSELIGHTSLAVE_H */
