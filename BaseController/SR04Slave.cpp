@@ -1,14 +1,14 @@
 #include "Arduino.h"
-#include "SR04.h"
+#include "SR04Slave.h"
 
-SR04::SR04(uint8_t trigPin, uint8_t echoPin): _trigPin(trigPin), _echoPin(echoPin) {
+SR04Slave::SR04Slave(uint8_t trigPin, uint8_t echoPin): _trigPin(trigPin), _echoPin(echoPin) {
 	pinMode(_trigPin, OUTPUT);
 	pinMode(_echoPin, INPUT);
 }
 
-SR04::~SR04() {/* NOTHING TO DECONSRUCT */ }
+SR04Slave::~SR04Slave() {/* NOTHING TO DECONSRUCT */ }
 
-void SR04::refresh() {
+void SR04Slave::refresh() {
 	digitalWrite(_trigPin, HIGH);
 	delayMicroseconds(10);
 	digitalWrite(_trigPin, LOW);
