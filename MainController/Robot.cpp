@@ -19,6 +19,7 @@ uint8_t Robot::getState() {
 
 void Robot::refresh() {
 	if (rStateChanged) {
+		rStateChanged = false;
 		switch (rState) {
 			case DISABLED:		disabledInit(); break;
 			case TEST:			testInit(); break;
