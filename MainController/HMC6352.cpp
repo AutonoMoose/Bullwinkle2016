@@ -20,13 +20,13 @@ void HMC6352::refresh() {
 	Wire.write("A");
 	Wire.endTransmission();
 
-	delayMicroseconds(100);	// The HMC6352 needs at least a 70us (microsecond) delay
+	delayMicroseconds(75);	// The HMC6352 needs at least a 70us (microsecond) delay
 
-	Wire.requestFrom(_slaveAddress, 2);		// Request the 2 byte heading (MSB comes first)
+	Wire.requestFrom(_slaveAddress, 2);	// Request the 2 bytes (MSB comes first)
 
-	while(Wire.available()) { 
+	while (Wire.available()) {
 		_MSB = Wire.read();
 		_LSB = Wire.read();
 	}
-	_angle = ((_MSB*256 + _LSB) / 10 ) - _heading;		// Put the MSB and LSB together 
+	_angle = ((_MSB >> 8 + _LSB) / 10 ) - _heading;		// Put the MSB and LSB together 
 }
