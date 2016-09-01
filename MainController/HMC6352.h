@@ -1,6 +1,9 @@
 #ifndef HMC6352_H
 #define HMC6352_H
 
+#include "Arduino.h"
+#include "Wire.h"
+
 class HMC6352 {
 public:
 	HMC6352();

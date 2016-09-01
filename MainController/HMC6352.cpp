@@ -1,6 +1,4 @@
-#include "Arduino.h"
 #include "HMC6352.h"
-#include "Wire.h"
 
 HMC6352::HMC6352() {
 	Wire.begin();
