@@ -25,6 +25,16 @@ bool L298::getInverted() {
 	return _isInverted;
 }
 
+void L298::enable() {
+	// Not much to do.
+}
+
+void L298::disable() {
+	digitalWrite(_pinDirA, LOW);
+	digitalWrite(_pinDirB, LOW);
+	digitalWrite(_pinSpeed, LOW);
+}
+
 void L298::refresh() {
 	if (_value >= 0) {									// Set Direction
 		digitalWrite(_pinDirA, !_isInverted);

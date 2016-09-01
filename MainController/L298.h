@@ -14,6 +14,8 @@ public:
 	void setInverted(bool value);
 	bool getInverted();
 
+	void enable();
+	void disable();
 	void refresh();
 private:
 	uint8_t _pinSpeed;
