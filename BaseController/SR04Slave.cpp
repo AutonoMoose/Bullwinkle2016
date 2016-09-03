@@ -9,9 +9,11 @@ SR04Slave::SR04Slave(uint8_t trigPin, uint8_t echoPin): _trigPin(trigPin), _echo
 SR04Slave::~SR04Slave() {/* NOTHING TO DECONSRUCT */ }
 
 void SR04Slave::refresh() {
+	digitalWrite(_trigPin, LOW);
+	delayMicroseconds(2);
 	digitalWrite(_trigPin, HIGH);
-	delayMicroseconds(10);
+	delayMicroseconds(5);
 	digitalWrite(_trigPin, LOW);
 
-	_value = constrain(pulseIn(_echoPin, HIGH) / 58, 0, 255);
+	_value = pulseIn(_echoPin, HIGH, 2900) / 58; // Limit to 2900 micro seconds
 }
