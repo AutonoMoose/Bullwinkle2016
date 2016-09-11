@@ -1,4 +1,5 @@
 #include "IRSlave.h"
+#include "Wire.h"
 
 IRSlave IR(6, 7, 8, 9, 24); // Power Pin, Clock Pin, Latch Pin, Data Pin, Sensor Count
 
@@ -13,5 +14,5 @@ void loop() {
 
 void onRequest() {
 	Wire.write(IR.getBest());
-	Wire.write(IR.getAngle);
+	Wire.write(IR.getAngle());
 }
