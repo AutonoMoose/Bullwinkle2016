@@ -1,8 +1,7 @@
-#include "Arduino.h"
-#include "Wire.h"
 #include "SenseLightMaster.h"
 
-SenseLightMaster::SenseLightMaster() {}
+SenseLightMaster::SenseLightMaster() {
+}
 
 SenseLightMaster::~SenseLightMaster() { /* NOTHING TO DECONSTRUCT */ }
 
