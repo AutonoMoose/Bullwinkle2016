@@ -14,5 +14,4 @@ void loop() {
 
 void onRequest() {
 	Wire.write(IR.getBest());
-	Wire.write(IR.getAngle());
 }
