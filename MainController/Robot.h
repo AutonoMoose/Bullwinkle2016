@@ -11,11 +11,10 @@ void autonomousPeriodic();
 class Robot {
 public:
 	enum rState_t { DISABLED, TEST, AUTONOMOUS, NUM_STATES };
+	enum rSensorType_t { SENSELIGHT, SR04, IR, LIGHTGATE };
 
 	Robot();
 	~Robot();
-
-	// void debug();
 
 	void setState(rState_t state);
 	uint8_t getState();
