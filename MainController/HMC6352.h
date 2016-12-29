@@ -18,8 +18,6 @@ private:
 	// Wire setup
 	uint8_t _masterAddress = 0x42;
 	uint8_t _slaveAddress = _masterAddress >> 1;
-	uint8_t _MSB;
-	uint8_t _LSB;
 
 	float _heading = 0;
 	float _angle;

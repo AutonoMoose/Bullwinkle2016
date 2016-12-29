@@ -1,104 +1,191 @@
-#include <PixyI2C.h> // Pixy CMU Cam (I2C)
-#include "Robot.h" // Control System
-#include "Wire.h" // I2C Communication
-#include "L298.h" // Motor Controller
-#include "Kicker.h" // Kicker Controller
-#include "HMC6352.h" // Compass
-#include "SR04Master.h" // Ultrasonic
-#include "SenseLightMaster.h" // Light Sensor
-#include "IRMaster.h" // IR Sensors
+#include "Wire.h"
+#include "Robot.h"
+#include "L298.h"
+#include "Kicker.h"
+#include "SenseLightMaster.h"
+#include "SR04Master.h"
+#include "IRMaster.h"
 
-// System Control
+// System
 Robot Robot;
 
-// Actuators
-L298 MotorA(3, 2, 4); // PWM, dirA, dirB
-L298 MotorB(5, 7, 8);
-L298 MotorC(6, 9, 10);
-Kicker Kicker(11, A1); // Signal, Analog
-
 // Sensors
-SR04Master UltraA;
-SR04Master UltraB;
-SR04Master UltraC;
-SR04Master UltraD;
-SenseLightMaster LightA; // Analog Input, Enable Output
-SenseLightMaster LightB; // Front Right
-SenseLightMaster LightC; // Back Left
-SenseLightMaster LightD; // Back Right
-IRMaster IR;
-
 HMC6352 Compass;
+SenseLightMaster LightLeft;
+SenseLightMaster LightRight;
+IRMaster IR;
+SR04Master UltraLeft;
+SR04Master UltraRight;
 
-const uint8_t BUTTON_START = 13;
-const uint8_t BUTTON_STOP = 12;
+// Actuators
+L298 MotorC(6, 5, 4);
+L298 MotorB(9, 8, 7);
+L298 MotorA(10, 13, 12);
+Kicker Kicker(A1, A1);
+
+float power = 0.3;
 
 void setup() {
-	Wire.begin(127);
-	// Sensor Initialization
-	Compass.setHeading();
-	Kicker.setPower(200);
+	Serial.begin(9600);
+	Wire.begin();
+}
+
+void loop() {
+	
+	if (analogRead(A6) > 512) {
+		Robot.setState(AUTONOMOUS);
+	}
+	else {
+		Robot.setState(DISABLED);
+	}
+
+	Wire.requestFrom(1, 4);
+
+	while (Wire.available()) {
+		UltraLeft.set(Wire.read());
+		UltraRight.set(Wire.read());
+
+		LightLeft.set(Wire.read());
+		LightRight.set(Wire.read());
+	}
+
+	Wire.requestFrom(2, 1);
+
+	while(Wire.available()) {
+		IR.setBest(Wire.read());
+	}
+
+	Robot.refresh();
+	MotorRefresh();
 }
 
 void disabledInit() {
-	MotorA.disable();
-	MotorB.disable();
-	MotorC.disable();
+	MotorA.set(0);
+	MotorB.set(0);
+	MotorC.set(0);
 }
 
 void disabledPeriodic() {
+	MotorA.set(0);
+	MotorB.set(0);
+	MotorC.set(0);
 }
 
 void testInit() {
 
 }
-
 void testPeriodic() {
 
 }
 
 void autonomousInit() {
-	MotorA.enable();
-	MotorB.enable();
-	MotorC.enable();
 }
 
 void autonomousPeriodic() {
-	// Update Sensors
-	Wire.requestFrom(1, 8);
-	while (Wire.available()) {
-		LightA.set(Wire.read()); // These may need to be reversed
-		LightB.set(Wire.read());
-		LightC.set(Wire.read());
-		LightC.set(Wire.read());
-
-		UltraA.set(Wire.read());
-		UltraB.set(Wire.read());
-		UltraC.set(Wire.read());
-		UltraD.set(Wire.read());
+	/*
+	if (LightLeft.get() > 190 && Ultrasonic < 5) {
+		right(0.35, 0);
+		MotorRefresh();
+		delay(100);
 	}
+	else if (LightRight.get() > 190 && Ultrasonic < 5) {
+		left(0.35, 0);
+		MotorRefresh();
+		delay(100);
+	}*/
+	/*else {*/
+		/*
+		if (GyroGet() < 30 || GyroGet() > 330) rotation = 0;
+		else if (GyroGet() != 180) rotation = 1/(abs(GyroGet() - 180));
+		else rotation = 1;
+		//rotation = 0;
+		power = 0.4;
+		if ((rotation+power) > 1) {
+			power = 1 - rotation;
+		}
+		if (IR.getBest() < 4 || IR.getBest() > 20) {
+			forwards(power, rotation);
+		}
+		else if (IR.getBest() <= 20 && IR.getBest() > 15) {
+			left(power, rotation);
+		}
+		else if (IR.getBest() <= 9 && IR.getBest() >= 4) {
+			right(power, rotation);
+		}
+		else if (IR.getBest() <= 15 && IR.getBest() > 9){
+			backwards(power, rotation);
+		}
+		*/
 
-	Wire.requestFrom(2, 2);
-	while (Wire.available()) {
-		IR.setBest(Wire.read());
-		IR.setBestAngle(Wire.read());
-	}
 
-	Compass.refresh();
+		/*
+		*
+		*
+		*	WORKING CODE!
+		*
+		*
+		*/
+		power = 0.4;
+		rotation = 0;
+		if (GyroGet() < 20 || GyroGet() > 340){
+			if (IR.getBest() < 4 || IR.getBest() > 20) {
+				forwards(power, rotation);
+				currentTime = millis();
+			}
+			else if (IR.getBest() <= 20 && IR.getBest() > 15) {
+				left(power, rotation);
+			}
+			else if (IR.getBest() <= 9 && IR.getBest() >= 4) {
+				right(power, rotation);
+			}
+			else if (IR.getBest() <= 15 && IR.getBest() > 9){
+				backwards(power, rotation);
+			}
+			else {
+				forwards(power, rotation);
+			}
+		}
+		else if (GyroGet() > 180) rotate(0.3);
+		else rotate (-0.3);	
+}
 
-	// Decide what to do
 
-	/* This is where Reilly does his magic */
-	
-	Kicker.kick();
+void left(float power, float rotation) {
+	MotorA.set((power-0.1)+rotation);
+	MotorB.set((power-0.1)-rotation);
+	MotorC.set(-(power-0.1)-rotation);
+}
+void right(float power, float rotation) {
+	MotorA.set(-(power-0.1)+rotation);
+	MotorB.set(-(power-0.1)-rotation);
+	MotorC.set((power-0.1)-rotation);
+}
+void forwards(float power, float rotation) {
+	MotorA.set(power+rotation);
+	MotorB.set(power-rotation);
+	MotorC.set(0.0);
+}
+void backwards(float power, float rotation) {
+	MotorA.set(-power+rotation);
+	MotorB.set(-power-rotation);
+	MotorC.set(0.0);
+}
+void rotate(float rotation){
+	MotorA.set(rotation);
+	MotorB.set(rotation);
+	MotorC.set(rotation);
+}
 
-	// Refresh (comment to disable functionality)
-	Kicker.refresh();
+void MotorRefresh() {
 	MotorA.refresh();
 	MotorB.refresh();
 	MotorC.refresh();
 }
 
-void loop() {
+void CompassRefresh() {
+
+}
+
+void CompassGet() {
 
 }

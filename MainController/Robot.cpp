@@ -1,4 +1,3 @@
-#include "Arduino.h"
 #include "Robot.h"
 
 Robot::Robot() {
@@ -10,7 +9,10 @@ Robot::~Robot() {
 }
 
 void Robot::setState(rState_t state) {
-	rStateChanged = true;
+	if (rState != state) {
+		rStateChanged = true;
+	}
+	rState = state;
 }
 
 uint8_t Robot::getState() {
@@ -18,13 +20,13 @@ uint8_t Robot::getState() {
 }
 
 void Robot::refresh() {
-	if (rStateChanged) {
-		rStateChanged = false;
+	if (rStateChanged == true) {
 		switch (rState) {
 			case DISABLED:		disabledInit(); break;
 			case TEST:			testInit(); break;
 			case AUTONOMOUS:	autonomousInit(); break;
 		}
+		rStateChanged = false;
 	}
 	else {
 		switch (rState) {
